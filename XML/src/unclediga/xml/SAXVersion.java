@@ -1,7 +1,6 @@
 package unclediga.xml;
 
 import com.sun.org.apache.xerces.internal.impl.Version;
-import com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
