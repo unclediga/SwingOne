@@ -34,6 +34,7 @@ public class ButtonsSample extends Application {
         primaryStage.setTitle("Buttons Sample");
         primaryStage.setWidth(300);
         primaryStage.setHeight(190);
+        scene.getStylesheets().add(getClass().getResource("ColorStyle.css").toExternalForm());
 
         Label label = new Label();
         label.setFont(Font.font("Arial",22));
@@ -44,6 +45,7 @@ public class ButtonsSample extends Application {
 
         Button button1 = new Button("Accept");
         button1.setGraphic(new ImageView(imageAccept));
+        button1.getStyleClass().add("button1");
 
         button1.setOnAction(event -> {label.setText("Accept");});
 
