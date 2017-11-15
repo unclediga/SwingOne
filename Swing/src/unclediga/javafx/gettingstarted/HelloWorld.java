@@ -1,4 +1,4 @@
-package unclediga.javafx;
+package unclediga.javafx.gettingstarted;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;

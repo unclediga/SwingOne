@@ -1,4 +1,4 @@
-package unclediga.javafx;
+package unclediga.javafx.gettingstarted;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;

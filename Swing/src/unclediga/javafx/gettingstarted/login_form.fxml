@@ -9,7 +9,7 @@
           xmlns:fx="http://javafx.com/fxml"
           prefHeight="400.0" prefWidth="600.0"
           vgap="10" hgap="10" alignment="CENTER"
-          fx:controller="unclediga.javafx.FXMLLoginFormController"
+          fx:controller="unclediga.javafx.gettingstarted.FXMLLoginFormController"
           styleClass="root">
     <gridLinesVisible>true</gridLinesVisible>
     <padding>

@@ -1,4 +1,4 @@
-package unclediga.javafx;
+package unclediga.javafx.gettingstarted;
 
 import javafx.application.Application;
 import javafx.geometry.HPos;
@@ -14,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class LoginForm extends Application {
