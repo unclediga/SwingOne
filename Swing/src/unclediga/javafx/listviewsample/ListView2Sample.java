@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.layout.StackPane;
@@ -46,7 +47,21 @@ public class ListView2Sample  extends Application{
 //        listView.setCellFactory(ComboBoxListCell.forListView("a","b"));
         listView.setCellFactory(ComboBoxListCell.forListView(names));
 
+        // compare data, what we are see and what real data are contained in list variable "data".
+
+        Button button = new Button();
+        button.setText("show data");
+        button.setOnAction(event -> {
+
+            for (int i = 0; i < 20; i++) {
+                System.out.println("i:"+i+":"+data.get(i));
+            }
+
+        });
+
+
         pane.getChildren().add(listView);
+        pane.getChildren().add(button);
         primaryStage.show();
     }
 }
