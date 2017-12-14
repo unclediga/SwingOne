@@ -72,12 +72,14 @@ public class MyTableCell2 extends Application {
         TableColumn<Pair, String> col2 = new TableColumn<>("Pair val");
         TableColumn<Pair, String> col3 = new TableColumn<>("Val std");
         TableColumn<Pair, Object> col4 = new TableColumn<>("Val custom");
+        TableColumn<Pair, Object> col5 = new TableColumn<>("Val custom");
 
         col1.setPrefWidth(60);
         col2.setPrefWidth(50);
         col3.setPrefWidth(50);
         col4.setPrefWidth(50);
-        tableView.getColumns().addAll(col1, col2, col3, col4);
+        col5.setPrefWidth(50);
+        tableView.getColumns().addAll(col1, col2, col3, col4, col5);
 
 
 //        col1.setCellValueFactory(new Col1ValueFactory());
@@ -116,6 +118,16 @@ public class MyTableCell2 extends Application {
         col4.setOnEditCommit(event -> {
             event.getRowValue().setVal(event.getNewValue());
             System.out.println("SET VAL COL4 : " + event.getNewValue());
+        });
+
+
+        /////////// COLUMN 5 //////////////////////
+
+        col5.setCellValueFactory(new PropertyValueFactory<>("val"));
+        col5.setCellFactory(new Col5CellFactory());
+        col5.setOnEditCommit(event -> {
+            System.out.println("SET VAL COL5 : " + event.getNewValue());
+            event.getRowValue().setVal(event.getNewValue());
         });
 
 
@@ -226,6 +238,76 @@ public class MyTableCell2 extends Application {
                     setItem(newValue);
                     updateItem(newValue, false);
                     System.out.println("commitEdit with Val:" + newValue);
+                }
+
+                @Override
+                protected void updateItem(Object item, boolean empty) {
+
+                    super.updateItem(item, empty);
+
+//                    System.out.println("updateItem");
+                    if (item != null && item instanceof String) {
+//      String val = new String2Image().toString(item);
+//                        ((Pair) getTableRow().getItem()).setVal(val);
+                        setGraphic(new ImageView(imgMap.get(item)));
+                        setText(null);
+
+//                    } else if(empty) {
+//                        setGraphic(null);
+//                        setText("<..>");
+                    } else {
+                        super.updateItem(null, empty);
+                        setGraphic(null);
+                        setText(null);
+                    }
+                }
+            };
+        }
+    }
+    private class Col5CellFactory implements Callback<TableColumn<Pair, Object>, TableCell<Pair, Object>> {
+
+        @Override
+        public TableCell<Pair, Object> call(TableColumn<Pair, Object> param) {
+
+
+            return new TableCell<Pair, Object>() {
+
+                private ComboBox comboBox;
+
+                @Override
+                public void startEdit() {
+                    System.out.println("startEdit -> cell idx : " + getIndex());
+                    System.out.println("startEdit -> cell item : " + getItem());
+                    super.startEdit();
+                    comboBox = new ComboBox(valList);
+                    comboBox.setCellFactory(param1 -> new ImageListCell());
+                    comboBox.setButtonCell(new ImageListCell());
+                    comboBox.getSelectionModel().select(getItem());
+
+                    comboBox.setOnAction(event -> {
+                        System.out.println("action " + event.toString());
+                        commitEdit(comboBox.getValue());
+                    });
+
+                    setGraphic(comboBox);
+                    setText(null);
+                }
+
+                @Override
+                public void cancelEdit() {
+                    System.out.println("cancelEdit");
+                    super.cancelEdit();
+                    comboBox = null;
+//                    updateItem(getItem(), false);
+                }
+
+                @Override
+                public void commitEdit(Object newValue) {
+                    System.out.println("commitEdit with Val:" + newValue);
+                    super.commitEdit(newValue);
+                    comboBox = null;
+//                    setItem(newValue);
+//                    updateItem(newValue, false);
                 }
 
                 @Override
