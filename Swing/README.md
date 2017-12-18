@@ -17,3 +17,7 @@ https://docs.oracle.com/javase/8/javase-books.htm
 `unclediga.jfxbe`  
 ### Example: Hero Picker
 ### Example: Bosses and Employees Working with Tables
+
+## Apress Pro JavaFX 8  by Johan Vos 2014 
+`unclediga.projavafx`
+https://github.com/Apress/pro-javafx-8/tree/master/projavafx8
