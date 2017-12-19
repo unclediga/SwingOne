@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IO/IO.iml" filepath="$PROJECT_DIR$/IO/IO.iml" />
       <module fileurl="file://$PROJECT_DIR$/OracleXSLTSamples/OracleXSLTSamples.iml" filepath="$PROJECT_DIR$/OracleXSLTSamples/OracleXSLTSamples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/POI/POI.iml" filepath="$PROJECT_DIR$/POI/POI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Selector/Selector.iml" filepath="$PROJECT_DIR$/Selector/Selector.iml" />
       <module fileurl="file://$PROJECT_DIR$/Swing/Swing.iml" filepath="$PROJECT_DIR$/Swing/Swing.iml" />
       <module fileurl="file://$PROJECT_DIR$/XML/XML.iml" filepath="$PROJECT_DIR$/XML/XML.iml" />
