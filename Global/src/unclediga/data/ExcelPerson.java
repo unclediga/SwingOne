@@ -1,9 +1,10 @@
-package unclediga.poi;
+package unclediga.data;
 public class ExcelPerson {
     private String acc;
     private String fio;
     private String dept;
     private Double sum;
+    private String ssn;
 
     public ExcelPerson(String fio, String dept, String acc, Double sum) {
         this.acc = acc;
@@ -44,6 +45,14 @@ public class ExcelPerson {
         this.sum = sum;
     }
 
+    public String getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
+
     @Override
     public String toString() {
         return "ExcelPerson{" +
@@ -51,6 +60,7 @@ public class ExcelPerson {
                 ", fio='" + fio + '\'' +
                 ", dept='" + dept + '\'' +
                 ", sum='" + sum + '\'' +
+                ", ssn='" + ssn + '\'' +
                 '}';
     }
 }

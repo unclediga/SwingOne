@@ -1,4 +1,6 @@
-package unclediga.poi;
+package unclediga.data;
+
+import unclediga.jdbc.JDBCUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,4 +48,17 @@ public class DataFactory {
         return getItems();
     }
 
+    public static List<ExcelPerson> getCheckedItems() {
+        if(list == null){
+            return getItems();
+        }
+
+        if(JDBCUtil.init()){
+            for(ExcelPerson p : list){
+                p.setSsn(JDBCUtil.findSSNbyAcc(p.getAcc()));
+            }
+            JDBCUtil.close();
+        };
+        return list;
+    }
 }

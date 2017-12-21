@@ -1,4 +1,4 @@
-package unclediga.myjfx.poi;
+package unclediga.main;
 
 import javafx.application.Application;
 import javafx.beans.InvalidationListener;
@@ -26,14 +26,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import unclediga.data.ExcelPerson;
 import unclediga.data.DataFactory;
+import unclediga.data.ExcelPerson;
 import unclediga.poi.ExcelParser;
 
 import java.io.File;
 
 
-public class ReadMyExcel extends Application {
+public class MainWin extends Application {
 
     private SimpleIntegerProperty totalCountProperty = new SimpleIntegerProperty(0);
     private SimpleDoubleProperty totalSumProperty = new SimpleDoubleProperty(0.0);
@@ -69,6 +69,17 @@ public class ReadMyExcel extends Application {
             }
         });
 
+        Button butCheckSSN = new Button("Check!");
+        butCheckSSN.setMinSize(60, 20);
+        butCheckSSN.setFont(Font.font(10));
+        butCheckSSN.setOnAction(event -> {
+            try {
+                l.addAll(DataFactory.getCheckedItems());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         Label lFilePath = new Label("<..file path..>");
         lFilePath.setPrefWidth(600);
         lFilePath.setTextFill(Color.BLUE);
@@ -85,8 +96,10 @@ public class ReadMyExcel extends Application {
         col3.setPrefWidth(200);
         TableColumn<ExcelPerson, Double> col4 = new TableColumn<>("Sum");
         col4.setPrefWidth(70);
+        TableColumn<ExcelPerson, String> col5 = new TableColumn<>("SSN");
+        col5.setPrefWidth(150);
 
-        tableView.getColumns().addAll(col1, col2, col3, col4);
+        tableView.getColumns().addAll(col1, col2, col3, col4,col5);
 
         col1.setCellFactory(TextFieldTableCell.forTableColumn());
         col2.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -103,6 +116,8 @@ public class ReadMyExcel extends Application {
             }
         }));
 
+        col5.setCellFactory(TextFieldTableCell.forTableColumn());
+
         col4.setStyle("-fx-alignment: CENTER-RIGHT;");
 //        ((TextField) col4.getCellFactory()).setAlignment(Pos.CENTER);
 
@@ -110,6 +125,7 @@ public class ReadMyExcel extends Application {
         col2.setCellValueFactory(new PropertyValueFactory<>("dept"));
         col3.setCellValueFactory(new PropertyValueFactory<>("acc"));
         col4.setCellValueFactory(new PropertyValueFactory<>("sum"));
+        col5.setCellValueFactory(new PropertyValueFactory<>("ssn"));
 
 
         l = getData();
@@ -132,7 +148,7 @@ public class ReadMyExcel extends Application {
         hbox.setSpacing(1);
         hbox.setPadding(new Insets(10));
         hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.getChildren().addAll(butOpen, butProcess, lFilePath);
+        hbox.getChildren().addAll(butOpen, butProcess, butCheckSSN, lFilePath);
 
 
         HBox hbox2 = new HBox();
