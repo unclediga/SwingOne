@@ -22,9 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.*;
 import javafx.util.StringConverter;
 import unclediga.data.DataFactory;
 import unclediga.data.ExcelPerson;
@@ -35,36 +34,67 @@ import java.io.File;
 
 public class MainWin extends Application {
 
-    private SimpleIntegerProperty totalCountProperty = new SimpleIntegerProperty(0);
-    private SimpleDoubleProperty totalSumProperty = new SimpleDoubleProperty(0.0);
-    private File initPath = new File("C:/TEMP");
-    private SimpleObjectProperty<File> fileProperty = new SimpleObjectProperty<>(initPath);
+    private SimpleIntegerProperty totalCountExcelProperty = new SimpleIntegerProperty(0);
+    private SimpleDoubleProperty totalSumExcelProperty = new SimpleDoubleProperty(0.0);
+    private SimpleStringProperty errMsgProperty = new SimpleStringProperty();
+    private File initPathExcel = new File("C:/TEMP");
+    private File initPathXml = new File("C:/TEMP");
+    private SimpleObjectProperty<File> fileExcelProperty = new SimpleObjectProperty<>(initPathExcel);
+    private SimpleObjectProperty<File> fileXmlProperty = new SimpleObjectProperty<>(initPathXml);
     private ObservableList<ExcelPerson> l;
+    private Stage detailsStage = new Stage();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Button butOpen = new Button("...");
-        butOpen.setMinSize(60, 20);
-        butOpen.setFont(Font.font(10));
-        butOpen.setOnAction(event -> {
+        Button butOpenExcel = new Button("...");
+        butOpenExcel.setMinSize(60, 20);
+        butOpenExcel.setFont(Font.font(10));
+        butOpenExcel.setOnAction(event -> {
             FileChooser dialog = new FileChooser();
-            dialog.setInitialDirectory(initPath);
+            dialog.setInitialDirectory(initPathExcel);
             File file = dialog.showOpenDialog(new Popup());
-            if(file != null){
-                fileProperty.set(file);
-                initPath = file.getParentFile();
+            if (file != null) {
+                fileExcelProperty.set(file);
+                initPathExcel = file.getParentFile();
             }
         });
 
-        Button butProcess = new Button("Do it!");
-        butProcess.setMinSize(60, 20);
-        butProcess.setFont(Font.font(10));
-        butProcess.setOnAction(event -> {
+        Button butOpenXml = new Button("...");
+        butOpenXml.setMinSize(60, 20);
+        butOpenXml.setFont(Font.font(10));
+        butOpenXml.setOnAction(event -> {
+            FileChooser dialog = new FileChooser();
+            dialog.setInitialDirectory(initPathExcel);
+            File file = dialog.showOpenDialog(new Popup());
+            if (file != null) {
+                fileXmlProperty.set(file);
+                initPathXml = file.getParentFile();
+            }
+        });
+
+        Button butProcessExcel = new Button("Process Excel");
+        butProcessExcel.setMinSize(60, 20);
+        butProcessExcel.setFont(Font.font(10));
+        butProcessExcel.setOnAction(event -> {
             try {
                 l.clear();
-                l.addAll(ExcelParser.parse(fileProperty.getValue()));
+                l.addAll(ExcelParser.parse(fileExcelProperty.getValue()));
             } catch (Exception e) {
+                errMsgProperty.setValue("Error process Excel");
+                e.printStackTrace();
+            }
+        });
+
+        Button butProcessXml = new Button("Process XML");
+        butProcessXml.setMinSize(60, 20);
+        butProcessXml.setFont(Font.font(10));
+        butProcessXml.setOnAction(event -> {
+            try {
+                l.clear();
+                l.addAll(ExcelParser.parse(fileExcelProperty.getValue()));
+            } catch (Exception e) {
+                errMsgProperty.setValue("Error process XML");
                 e.printStackTrace();
             }
         });
@@ -80,12 +110,28 @@ public class MainWin extends Application {
             }
         });
 
-        Label lFilePath = new Label("<..file path..>");
-        lFilePath.setPrefWidth(600);
-        lFilePath.setTextFill(Color.BLUE);
-        lFilePath.setFont(Font.font("Courier New", 12));
-        lFilePath.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
-        lFilePath.textProperty().bind(fileProperty.asString());
+        Button butShowDetails = new Button("det");
+        butShowDetails.setMinSize(60, 20);
+        butShowDetails.setFont(Font.font(10));
+        butShowDetails.setOnAction(event -> {
+            System.out.println("Show");
+            detailsStage.show();
+        });
+
+        Label lbExcelFilePath = new Label("<..file path..>");
+        lbExcelFilePath.setPrefWidth(600);
+        lbExcelFilePath.setTextFill(Color.BLUE);
+        lbExcelFilePath.setFont(Font.font("Courier New", 12));
+        lbExcelFilePath.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
+        lbExcelFilePath.textProperty().bind(fileExcelProperty.asString());
+
+
+        Label lbXmlFilePath = new Label("<..file path..>");
+        lbXmlFilePath.setPrefWidth(600);
+        lbXmlFilePath.setTextFill(Color.BLUE);
+        lbXmlFilePath.setFont(Font.font("Courier New", 12));
+        lbXmlFilePath.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
+        lbXmlFilePath.textProperty().bind(fileXmlProperty.asString());
 
         TableView tableView = new TableView();
         TableColumn<ExcelPerson, String> col1 = new TableColumn<>("Fio");
@@ -99,7 +145,7 @@ public class MainWin extends Application {
         TableColumn<ExcelPerson, String> col5 = new TableColumn<>("SSN");
         col5.setPrefWidth(150);
 
-        tableView.getColumns().addAll(col1, col2, col3, col4,col5);
+        tableView.getColumns().addAll(col1, col2, col3, col4, col5);
 
         col1.setCellFactory(TextFieldTableCell.forTableColumn());
         col2.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -132,34 +178,84 @@ public class MainWin extends Application {
 
 //        SimpleListProperty<ExcelPerson> listProperty = new SimpleListProperty<>(l);
 
-        Text txtCount = new Text();
-        txtCount.setFont(Font.font("Consolas", FontWeight.BOLD, 14));
-        txtCount.textProperty().bind(new SimpleStringProperty("count: ").concat(totalCountProperty.asString()));
-        Text txtSum = new Text();
-        txtSum.textProperty().bind(new SimpleStringProperty("sum: ").concat(totalSumProperty.asString()));
-        txtSum.setFont(Font.font("Consolas", FontWeight.BOLD, 14));
+        Text txtExcelCount = new Text();
+        txtExcelCount.setFont(Font.font("Consolas", FontWeight.BOLD, 12));
+        txtExcelCount.textProperty().bind(new SimpleStringProperty("Работников: ").concat(totalCountExcelProperty.asString()));
+        Text txtExcelSum = new Text();
+        txtExcelSum.textProperty().bind(new SimpleStringProperty("Сумма: ").concat(totalSumExcelProperty.asString()));
+        txtExcelSum.setFont(Font.font("Consolas", FontWeight.BOLD, 12));
 
+        Text txtErrMsg = new Text();
+        txtErrMsg.setFont(Font.font("Consolas", FontWeight.BOLD, 12));
+        txtErrMsg.textProperty().bind(errMsgProperty);
+        txtErrMsg.setTextAlignment(TextAlignment.LEFT);
+
+        errMsgProperty.setValue("Error in super-puper\nSecond string\nThird");
 
 
         tableView.setItems(l);
 
 
-        HBox hbox = new HBox();
-        hbox.setSpacing(1);
-        hbox.setPadding(new Insets(10));
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.getChildren().addAll(butOpen, butProcess, butCheckSSN, lFilePath);
+        VBox detaisVbox = new VBox(10, tableView);
+        Scene detailsScene = new Scene(detaisVbox, 600, 300);
+        detailsStage.setScene(detailsScene);
+
+
+        HBox hbox1 = new HBox();
+        hbox1.setSpacing(1);
+//        hbox.setPadding(new Insets(10));
+        hbox1.setAlignment(Pos.CENTER_LEFT);
+        hbox1.getChildren().addAll(lbExcelFilePath, butOpenExcel);
+
+        HBox hbox11 = new HBox();
+        hbox11.setSpacing(10);
+        hbox11.setPadding(new Insets(10));
+        hbox11.setAlignment(Pos.CENTER_RIGHT);
+        hbox11.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, null, null)));
+        hbox11.getChildren().addAll(txtExcelCount, txtExcelSum);
 
 
         HBox hbox2 = new HBox();
-        hbox2.setSpacing(10);
-        hbox2.setPadding(new Insets(10));
-        hbox2.setAlignment(Pos.CENTER_RIGHT);
-        hbox2.setBackground(new Background(new BackgroundFill(Color.AQUAMARINE, null, null)));
-        hbox2.getChildren().addAll(txtCount, txtSum);
+        hbox2.setSpacing(1);
+//        hbox.setPadding(new Insets(10));
+        hbox2.setAlignment(Pos.CENTER_LEFT);
+        hbox2.getChildren().addAll(lbXmlFilePath, butOpenXml);
 
-        BorderPane vbox = new BorderPane(tableView, hbox, null, hbox2, null);
-        Scene scene = new Scene(vbox, 600, 400);
+
+        HBox hbox3 = new HBox();
+        hbox3.setSpacing(10);
+        hbox3.setPadding(new Insets(10));
+        hbox3.setAlignment(Pos.CENTER_LEFT);
+        hbox3.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, null, null)));
+        hbox3.getChildren().addAll(txtErrMsg);
+
+
+        GridPane filePane = new GridPane();
+        filePane.setHgap(5);
+        filePane.setVgap(10);
+        filePane.setPadding(new Insets(3, 20, 3, 20));
+
+        Label lbExcel = new Label("Файл Excel:");
+        Label lbXml = new Label("Файл XML:");
+
+        filePane.add(lbExcel, 0, 0);
+        filePane.add(hbox1, 0, 1);
+        filePane.add(hbox11, 0, 2);
+        filePane.add(lbXml, 0, 3);
+        filePane.add(hbox2, 0, 4);
+        filePane.add(hbox3, 0, 5);
+
+        HBox buttonBox = new HBox();
+        buttonBox.setSpacing(5);
+        buttonBox.setPadding(new Insets(10));
+        buttonBox.setAlignment(Pos.CENTER_LEFT);
+        buttonBox.getChildren().addAll(butProcessExcel, butProcessXml);
+
+
+        BorderPane mainPane = new BorderPane(filePane, null, null, buttonBox, null);
+
+
+        Scene scene = new Scene(mainPane, 600, 265);
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -169,8 +265,8 @@ public class MainWin extends Application {
     private ObservableList<ExcelPerson> getData() {
         ObservableList<ExcelPerson> m = FXCollections.observableArrayList();
         m.addListener((InvalidationListener) observable -> {
-                    totalCountProperty.set(DataFactory.getCount());
-                    totalSumProperty.set(DataFactory.getSum());
+                    totalCountExcelProperty.set(DataFactory.getCount());
+                    totalSumExcelProperty.set(DataFactory.getSum());
                 }
 
         );
