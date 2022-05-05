@@ -1,4 +1,9 @@
-package unclediga.http;
+/**
+ * Standalone server
+ * stop on DELETE request 
+ */
+
+package ru.unclediga.examples.http;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
@@ -11,32 +16,34 @@ import java.io.OutputStream;
 
 
 public class TestHttpServer1 {
+  
+  private static HttpServer server = null;
+  
+
   public static void main(String[] args) {
     new TestHttpServer1();
   }
 
-  public TestHttpServer1(){
-    try{
-        HttpServer server = HttpServer.create(new InetSocketAddress("localhost",8282), 0);
+  private TestHttpServer1(){
 
-        server.createContext("/app", new MyHandler(server));
-
-        
-        System.out.println("Server starting...");
-        server.start();
-        
-
-      }catch(IOException e){
-        e.printStackTrace();
-      }
   }
 
-  protected class MyHandler implements HttpHandler{
+  public static HttpServer getTestServer(){
+    if (server == null){
+      try{
+          server = HttpServer.create(new InetSocketAddress("localhost",8282), 0);
+          server.createContext("/app", new MyHandler());
+          System.out.println("Server created...");
 
-    private HttpServer server;
-    public MyHandler(HttpServer server){
-      this.server = server;
+        }catch(IOException e){
+          e.printStackTrace();
+        }
     }
+    return server;
+  } 
+
+
+  protected static class MyHandler implements HttpHandler{
 
     @Override
     public void handle(HttpExchange t) throws IOException {
